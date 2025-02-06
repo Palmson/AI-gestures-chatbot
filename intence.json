@@ -75,7 +75,7 @@
       "tag": "dislikes",
       "patterns": [
         "dislike",
-        "you are bad"
+        "bad"
       ],
       "responses": [
         ":thumbsdown:"
@@ -102,8 +102,7 @@
     {
       "tag": "wishes",
       "patterns": [
-        "good luck",
-        "wish you luck"
+        "luck"
       ],
       "responses": [
         ":fingers_crossed:"
@@ -113,7 +112,6 @@
       "tag": "peaces",
       "patterns": [
         "No to war",
-        "peace and love",
         "peace"
       ],
       "responses": [
@@ -201,7 +199,7 @@
       "tag": "downs",
       "patterns": [
         "under",
-        "go down"
+        "down"
       ],
       "responses": [
         ":point_down:"
@@ -212,7 +210,7 @@
       "patterns": [
         "upper",
         "above",
-        "go up",
+        "up",
         "true"
       ],
       "responses": [
