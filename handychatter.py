@@ -9,7 +9,8 @@ from nltk.corpus import stopwords
 from stop_words import get_stop_words
 from nltk.stem import WordNetLemmatizer, PorterStemmer
 from keras.models import load_model
-langid.set_languages(['en','ru'])
+
+langid.set_languages(['en', 'ru'])
 stopWordsEn = set().union(get_stop_words('en'), stopwords.words('english'))
 stopWordsRu = set().union(get_stop_words('ru'), stopwords.words('russian'))
 stopWords = list(set().union(stopWordsEn, stopWordsRu))
@@ -24,16 +25,16 @@ words = pickle.load(open('words.pkl', 'rb'))
 classes = pickle.load(open('classes.pkl', 'rb'))
 model = load_model('chatbot_model.h5')
 
-
 def clean_up_sentence(sentence):
     sentence_words = nltk.word_tokenize(sentence)
     lemmedTokens = []
     for word in sentence_words:
-        if langid.classify(word)[0] == 'en':
-            lemmedTokens.append(stemmer.stem(word))
-            lemmedTokens.append(lemmatizer.lemmatize(word))
-        elif langid.classify(word)[0] == 'ru':
-            lemmedTokens.append(morph.parse(word)[0].normal_form)
+        if word not in stopWords:
+            if langid.classify(word)[0] == 'en':
+                    lemmedTokens.append(stemmer.stem(word))
+                    lemmedTokens.append(lemmatizer.lemmatize(word))
+            elif langid.classify(word)[0] == 'ru':
+                    lemmedTokens.append(morph.parse(word)[0].normal_form)
     return lemmedTokens
 
 def bag_of_words(sentence):
@@ -68,11 +69,11 @@ def get_response(intents_list, intents_json):
         return result
     except:
         return result
-
-print('hands up!')
-
-while True:
-    message = input('').lower()
-    ints = predict_class(message)
+def get_true_response(message: str) -> str:
+    mem = message.lower()
+    ints = predict_class(mem)
     res = get_response(ints, intents)
-    print(res)
+    if res == '':
+        return
+    else:
+        return res

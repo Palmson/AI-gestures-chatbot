@@ -6,6 +6,8 @@ import tensorflow as tf
 import pymorphy2
 import langid
 import nltk
+from nltk.corpus import stopwords
+from stop_words import get_stop_words
 from nltk.stem import WordNetLemmatizer, PorterStemmer
 
 lemmatizer = WordNetLemmatizer()
@@ -14,8 +16,11 @@ morph = pymorphy2.MorphAnalyzer()
 
 with open('intence.json', 'r', encoding='utf-8') as f:
     intents = json.load(f)
-
-
+langid.set_languages(['en', 'ru'])
+stopWordsEn = set().union(get_stop_words('en'), stopwords.words('english'))
+stopWordsRu = set().union(get_stop_words('ru'), stopwords.words('russian'))
+stopWords = list(set().union(stopWordsEn, stopWordsRu))
+stopWords.sort()
 
 words = []
 classes = []
@@ -29,14 +34,15 @@ for intent in intents['intents']:
         documents.append((wordList, intent['tag']))
         if intent['tag'] not in classes:
             classes.append(intent['tag'])
-sentence_words = nltk.word_tokenize(words)
+sentence_words = words
 lemmedTokens = []
 for word in sentence_words:
-    if langid.classify(word)[0] == 'en':
-        lemmedTokens.append(stemmer.stem(word))
-        lemmedTokens.append(lemmatizer.lemmatize(word))
-    elif langid.classify(word)[0] == 'ru':
-        lemmedTokens.append(morph.parse(word)[0].normal_form)
+    if word not in stopWords:
+        if langid.classify(word)[0] == 'en':
+            lemmedTokens.append(stemmer.stem(word))
+            lemmedTokens.append(lemmatizer.lemmatize(word))
+        elif langid.classify(word)[0] == 'ru':
+            lemmedTokens.append(morph.parse(word)[0].normal_form)
 words = lemmedTokens
 words = sorted(set(words))
 
@@ -66,15 +72,15 @@ trainX = training[:, :len(words)]
 trainY = training[:, len(words):]
 
 model = tf.keras.Sequential()
-model.add(tf.keras.layers.Dense(2048, input_shape=(len(trainX[0]),), activation = 'relu'))
+model.add(tf.keras.layers.Dense(128, input_shape=(len(trainX[0]),), activation='relu'))
 model.add(tf.keras.layers.Dropout(0.5))
-model.add(tf.keras.layers.Dense(1024, activation = 'relu'))
+model.add(tf.keras.layers.Dense(64, activation='relu'))
 model.add(tf.keras.layers.Dropout(0.5))
 model.add(tf.keras.layers.Dense(len(trainY[0]), activation='softmax'))
 
 sgd = tf.keras.optimizers.SGD(learning_rate=0.01, momentum=0.9, nesterov=True)
 model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 
-model.fit(trainX, trainY, epochs=2000, batch_size=5, verbose=1)
+model.fit(trainX, trainY, epochs=1500, batch_size=5, verbose=1)
 model.save('chatbot_model.h5')
-print('Дело сделано!')
+print('Job Done!')

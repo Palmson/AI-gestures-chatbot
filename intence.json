@@ -114,12 +114,7 @@
       "patterns": [
         "No to war",
         "peace and love",
-        "peace",
-        "замир",
-        "мир вашему дому",
-        "мира и добра",
-        "мир",
-        "нет войне"
+        "peace"
       ],
       "responses": [
         ":v:"
@@ -129,7 +124,6 @@
       "tag": "hearts",
       "patterns": [
         "love you",
-        "senpai",
         "hearts"
       ],
       "responses": [
@@ -161,8 +155,7 @@
       "tag": "tinies",
       "patterns": [
         "tiny",
-        "small",
-        "unhuge"
+        "small"
       ],
       "responses": [
         ":pinching_hand:"
