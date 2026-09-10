@@ -14,7 +14,7 @@ lemmatizer = WordNetLemmatizer()
 stemmer = PorterStemmer()
 morph = pymorphy2.MorphAnalyzer()
 
-with open('intence.json', 'r', encoding='utf-8') as f:
+with open('intents.json', 'r', encoding='utf-8') as f:
     intents = json.load(f)
 langid.set_languages(['en', 'ru'])
 stopWordsEn = set().union(get_stop_words('en'), stopwords.words('english'))
